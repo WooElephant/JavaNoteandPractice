@@ -98,8 +98,6 @@ if (file.exists()) {
 
 
 
-## I/O流
-
 > **I / O** 是 **Input / Output** 的缩写
 >
 > Java程序中，对于数据的输入输出操作以流的方式来进行
@@ -108,7 +106,7 @@ if (file.exists()) {
 
 
 
-### 流的分类
+## 流的分类
 
 | 抽象基类 |    字节流    | 字符流 |
 | :------: | :----------: | :----: |
@@ -121,7 +119,7 @@ if (file.exists()) {
 
 ![](C:\Users\augus\Documents\GitHub\JavaNoteandPractice\JavaSE\10IO\笔记\io.png)
 
-
+## 字节流
 
 ### FileInputStream
 
@@ -218,6 +216,8 @@ fis.close();
 
 
 
+## 字符流
+
 ### FileReader
 
 ```java
@@ -258,4 +258,297 @@ fw.close();
 ```
 
 > 和字节输出没有什么区别
+
+
+
+## 处理流
+
+### 节点流和处理流
+
+> 节点流是从一个特定数据源读写数据的
+>
+> 上面我们谈到的这些都是节点流
+>
+> 节点流是底层流，它与数据源直接连接
+
+> 处理流也叫包装流
+>
+> 就是把节点流进行包装，使流的功能更加强大
+
+
+
+### BufferedReader
+
+```java
+String filepath = "d:\\abc.txt";
+BufferedReader br = new BufferedReader(new FileReader(filepath));
+String line;
+while ((line = br.readLine()) != null){
+    System.out.println(line);
+}
+br.close();
+```
+
+> 我们发现包装流在使用的时候，比节点流方便很多，readline就可以直接读取下一行
+>
+> **注意**包装流只需要关闭本身，被传入的节点流，会在底层自动关闭
+
+
+
+
+
+### BufferedWriter
+
+```java
+String filepath = "d:\\abc.txt";
+BufferedWriter bw = new BufferedWriter(new FileWriter(filepath));
+String str = "你好，世界！";
+bw.write(str);
+bw.newLine();
+bw.write(str);
+bw.close();
+```
+
+> 需要注意的是，自己要记得手动加入换行
+>
+> newline方法会插入一个与你系统设置相关的换行符
+
+
+
+
+
+### 字符处理流文件拷贝
+
+```java
+String srcFilePath = "d:\\aaa.txt";
+String desFilePath = "e:\\aaa.txt";
+BufferedReader br = new BufferedReader(new FileReader(srcFilePath));
+BufferedWriter bw = new BufferedWriter(new FileWriter(desFilePath));
+String line;
+while ( (line = br.readLine()) != null ){
+    bw.write(line);
+    bw.newLine();
+}
+bw.close();
+br.close();
+```
+
+> readline不会读取换行符，所以要手动写一个换行符
+
+
+
+### 字节处理流拷贝文件
+
+```java
+String srcPath = "e:\\spring.png";
+String desPath = "d:\\spring.png";
+BufferedInputStream bis = new BufferedInputStream(new FileInputStream(srcPath));
+BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(desPath));
+byte[] buff = new byte[1024];
+int dataLen = 0;
+while ( (dataLen = bis.read(buff)) != -1){
+    bos.write(buff,0,dataLen);
+}
+bos.close();
+bis.close();
+```
+
+> 和节点流的使用没有什么区别
+
+
+
+### 对象处理流
+
+> 将int num = 100保存到文件中，应该怎么做
+>
+> 将Dog dog = new Dog("小黄", 3)保存到文件中，应该怎么做
+>
+> 这些内容保存之后，要能恢复到程序中
+
+> `序列化和反序列化`
+>
+> `序列化`：序列化就是在保存数据时，保存*数据的值*和*数据类型*
+>
+> `反序列化`：反序列化就是在恢复数据时，恢复*数据的值*和*数据类型*
+>
+> 如果需要让某个对象支持序列化机制，必须让其类是可序列化的
+>
+> 必须实现以下两个接口之一
+>
+> Serializable 这是一个标记接口，一般我们用这个
+>
+> Externalizable
+
+```java
+String filepath = "d:\\data.dat";
+ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filepath));
+oos.writeInt(100);
+oos.writeUTF("你好！");
+oos.writeObject(new Dog("旺财",3));
+oos.close();
+```
+
+> 将一些类型写出到硬盘
+
+
+
+```java
+String filepath = "d:\\data.dat";
+ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filepath));
+System.out.println(ois.readInt());
+System.out.println(ois.readUTF());
+Dog dog = (Dog) ois.readObject();
+System.out.println(dog);
+ois.close();
+```
+
+> 一定要按照储存的顺序来读取，不然会报错
+
+> 序列化和反序列化注意事项
+>
+> 1. 读写顺序要一致
+>
+> 2. 序列化的类建议添加SerialVersionUID，提高兼容性
+>
+>    如果不添加此属性，只要类的主体发生变化，java会认为他们版本不一致，不允许反序列化
+>
+> 3. 序列化对象时，所有属性都会被序列化，除了static和transient修饰的成员
+>
+> 4. 序列化对象时，要求内部的成员属性也要实现序列化接口
+
+
+
+### 标准输入输出流
+
+> System.in		默认输入流，代表键盘
+>
+> System.out	 默认输出流，代表显示器
+
+
+
+
+
+### 转换流
+
+> `InputStreamReader`：可以将InputStream（字节流）转换为Reader（字符流）
+>
+> `OutputStreamWriter`：可以将OutputStream（字节流）转换为Writer（字符流）
+>
+> 处理纯文本数据时，使用字符流效率更高，并且可以有效解决乱码问题
+
+```java
+String path = "d:\\bbb.txt";
+BufferedReader br = new BufferedReader(new FileReader(path));
+String data = br.readLine();
+System.out.println(data);
+br.close();
+```
+
+> 如果我们的文件含有中文，编码格式不是UTF8
+>
+> 就会出现乱码
+
+```java
+String path = "d:\\bbb.txt";
+InputStreamReader isr = new InputStreamReader(new FileInputStream(path),"gbk");
+BufferedReader br = new BufferedReader(isr);
+String data;
+data = br.readLine();
+System.out.println(data);
+br.close();
+```
+
+> 我们使用转换流，将FileInputStream转成字节流，然后再传给包装流
+>
+> 就可以解决乱码问题
+
+```java
+String filepath = "d:\\ccc.txt";
+OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(filepath), "gbk");
+osw.write("你好，世界！");
+osw.close();
+```
+
+> 使用字符转换流，自定义输出的编码格式
+
+
+
+### 打印流
+
+```java
+PrintStream out = System.out;
+out.println("你好");
+out.close();
+```
+
+> 就相当于我们常用的sout（syso）
+
+```java
+System.setOut(new PrintStream("d:\\ddd.txt"));
+System.out.println("你好");
+```
+
+> 我们现在可以设置System.out的位置不要为默认的显示器
+>
+> 而手动指定一个位置，就可以把打印的内容输出到，我们指定的文件中
+
+```java
+PrintWriter pw = new PrintWriter(System.out);
+pw.println("hello world");
+pw.close();
+```
+
+> PrintWriter和PrintStream用法是相同的
+
+```java
+PrintWriter pw = new PrintWriter(new FileWriter("d:\\ddd.txt"));
+pw.println("hello world");
+pw.close();
+```
+
+> 我们也可以为它指定输出位置
+
+
+
+### Properties
+
+```java
+BufferedReader br = new BufferedReader(new FileReader("src/com/augus01/mysql.properties"));
+String data;
+while ((data = br.readLine()) != null) {
+    String[] split = data.split("=");
+    System.out.println(split[0] + " : " + split[1]);
+}
+br.close();
+```
+
+> 使用流，从properties文件中读取配置信息
+
+```java
+Properties pro = new Properties();
+pro.load(new FileReader("src/com/augus01/mysql.properties"));
+pro.list(System.out);
+
+String username = pro.getProperty("username");
+System.out.println(username);
+```
+
+> 我们使用properties类可以更容易的获取
+
+```java
+Properties pro = new Properties();
+pro.setProperty("username","root");
+pro.setProperty("password","1234");
+pro.store(new FileWriter("src/com/augus01/mysql.properties"),null);
+```
+
+> 使用properties类也可以写入一个配置文件
+>
+> store方法中，第二个参数是注释，如果填写，将在properties文件最上面生成注释信息
+>
+> **注意**  如果文件中本身就有写入的key，则会覆盖，否则会创建
+>
+> 其实就是个HashTable
+
+
 
