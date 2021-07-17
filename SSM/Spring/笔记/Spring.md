@@ -299,7 +299,7 @@ public void test01() {
 
 
 
-## 3 IOC深入探究
+## 3 XML配置
 
 ### 3.1 根据类型获取实例 **（重点）**
 
@@ -754,7 +754,9 @@ public class Airplane {
 >
 > `factory-method`指定工厂方法
 >
-> 如果方法需要参数使用<constructor-arg> 为方法传递参数
+> 如果方法需要参数
+>
+> 使用<constructor-arg> 为方法传递参数
 
 
 
@@ -840,17 +842,384 @@ public void myDestory() {
 
 ### 3.11 bean的后置处理器
 
+> Spring有一个后置处理器接口：可以在bean的初始化前后调用方法
+
+```java
+public class MyBeanPostProcessor implements BeanPostProcessor {
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        System.out.println("[" + beanName + "]Bean将要调用初始化方法...");
+        return bean;
+    }
+
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        System.out.println("[" + beanName + "]Bean初始化方法调用完了...");
+        return bean;
+    }
+}
+```
+
+```xml
+<bean class="com.augus.bean.MyBeanPostProcessor" id="beanPostProcessor"></bean>
+```
+
+> 这里返回的bean就是交给下一环的对象
+>
+> 在这里可以对对象进行一些操作
 
 
 
+### 3.12 引用外部属性文件 （重点）
+
+> 数据库连接池作为单实例是很好的
+
+```xml
+<bean class="com.mchange.v2.c3p0.ComboPooledDataSource" id="dataSource">
+    <property name="user" value="root"></property>
+    <property name="password" value="1234"></property>
+    <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/test"></property>
+    <property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+</bean>
+```
+
+```java
+DataSource dataSource = ioc.getBean(DataSource.class);
+```
+
+> 这些属性又如何通过Properties来获取呢
+
+```xml
+xmlns:context="http://www.springframework.org/schema/context
+xsi:schemaLocation=...
+http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.2.xsd
+```
+
+> 注意名称空间结尾是context，而不是util，有的时候会自动导入util导致名称空间不可用
+>
+> 下方还需要加入解析文件，否则会报错
+
+```properties
+username123=root
+password=1234
+url=jdbc:mysql://localhost:3306/test
+driver=com.mysql.cj.jdbc.Driver
+```
+
+> 这里username123可以起任何名称唯独不能是，username是Spring的保留字
+>
+> 如果写username会取出spring中的username
+
+```xml
+<bean class="com.mchange.v2.c3p0.ComboPooledDataSource" id="dataSource">
+    <property name="user" value="${username123}"></property>
+    <property name="password" value="${password}"></property>
+    <property name="jdbcUrl" value="${url}"></property>
+    <property name="driverClass" value="${driver}"></property>
+</bean>
+```
 
 
 
+### 3.13 基于XML的自动装配
+
+```xml
+<bean id="car" class="com.augus.bean.Car">
+    <property name="brand" value="宝马"></property>
+    <property name="color" value="黑色"></property>
+    <property name="price" value="300000"></property>
+</bean>
+
+<bean class="com.augus.bean.Person" id="person" autowire="byType">
+</bean>
+```
+
+> 在这里有一个属性autowire
+>
+> 它的默认值是default：不自动装配
+>
+> no：不自动装配
+>
+> byName：按照名称匹配赋值（以属性名作为id去容器中寻找）
+>
+> byType：按照类型匹配赋值，集合中的内容也会被装配
+>
+> Constructor：按照构造器进行赋值，按照有参构造器类型进行装配，如果找到了多个则将参数名作为id继续寻找
 
 
-## 4 AOP
 
-> 声明式事务
+### 3.14 Spring表达式
+
+```xml
+<bean class="com.augus.bean.Person" id="person">
+    <!--字面量-->
+    <property name="age" value="#{12*5}"></property>
+    <!--引用其他bean属性-->
+    <property name="name" value="#{book1.bookname}"></property>
+    <!--引用其他bean-->
+    <property name="car" value="#{car}"></property>
+    <!--调用静态方法-->
+    <property name="email" value="#{T(java.util.UUID).randomUUID().toString().substring(0,5)}" ></property>
+    <!--调用非静态方法-->
+    <property name="email" value="#{book1.getBookName()}"></property>
+</bean>
+```
+
+
+
+## 4 注解配置
+
+### 4.1 通过注解创建对象 （重点）
+
+> 通过给bean上添加注解，快捷的将bean加入容器
+>
+> 1. 给要添加的组件上加注解
+> 2. 告诉Spring自动扫描注解
+> 3. 导入AOP包
+
+#### 4.1.1 注解
+
+> Spring有四个注解
+>
+> @Controller：推荐控制器层（Servlet）
+>
+> @Service：推荐业务逻辑层（Service）
+>
+> @repository：推荐持久化层（DAO）
+>
+> @component：推荐其他
+
+```java
+@Controller
+public class BookServlet {
+}
+
+@Service
+public class BookService {
+}
+
+@Repository
+public class BookDao {
+}
+```
+
+#### 4.1.2 注册扫描
+
+```xml
+<context:component-scan base-package="com.augus"></context:component-scan>
+```
+
+> 会将base-package下面所有包和所有加了注解的类
+>
+> 扫描进容器中
+>
+> 至少精确到2级目录，不然会把一些外部依赖项也导入容器
+
+
+
+#### 4.1.3 获取bean
+
+> 加了注解的bean，其id为类名首字母小写
+
+
+
+### 4.2 更改默认id
+
+```java
+@Repository("bookDao01")
+public class BookDao {
+}
+```
+
+
+
+### 4.3 更改多实例
+
+```java
+@Scope(value = "prototype")
+public class BookDao {
+}
+```
+
+
+
+### 4.4 指定扫描的内容
+
+```xml
+<context:component-scan base-package="com.augus">
+    <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+</context:component-scan>
+```
+
+> context:exclude-filter：可以使扫描时不包含某些组件
+>
+> type="annotation"：指定排除规则为，以注解进行排除
+>
+> expression：写注解的全类名
+
+> type还有几种类型的值：
+>
+> assignable：指定排除某个具体类
+>
+> aspectj：aspectj表达式
+>
+> custom：自定义typefilter类，来过滤
+>
+> regex：正则表达式
+>
+> 我们一般只用annotation与assignable
+
+```xml
+<context:component-scan base-package="com.augus" use-default-filters="false">
+    <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+</context:component-scan>
+```
+
+> 也可以反向，选择只要哪些
+>
+> 这里要禁用掉默认的过滤规则
+
+
+
+### 4.5 Autowire （重点）
+
+```java
+@Controller
+public class BookServlet {
+    @Autowired
+    private BookService bookService;
+```
+
+> 只需要在需要使用的组件上加入 @Autowired
+>
+> 则会自动从容器中找到相应组件，并且赋值
+
+> 1. 先按照类型去容器中寻找组件，找到则赋值，找不到就报错
+> 2. 如果找到多个，按照变量名作为id继续匹配，匹配成功则赋值，匹配不到则报错
+
+```java
+@Qualifier("bookService2")
+@Autowired
+private BookService bookService;
+```
+
+> 也可以用@Qualifier("bookService2")手动为其指定一个id来赋值
+
+```java
+@Qualifier("bookService2")
+@Autowired(required = false)
+private BookService bookService;
+```
+
+> 如果找不到不想报错，则可以@Autowired(required = false)这样写
+>
+> 如果找不到，就用null赋值
+>
+> 但这样容易产生空指针异常
+
+```java
+@Autowired
+public void test01(BookDao bookDao){
+    
+}
+```
+
+> @Autowired写在方法上，方法的参数也会自动注入
+>
+> 这个方法在bean创建的时候会自动运行
+>
+> 可以当做自动set方法使用
+
+```java
+@Autowired
+public void test01(@Qualifier("bookDao2") BookDao bookDao){
+}
+```
+
+> 在参数中也可以嵌套@Qualifier("bookDao2") 使用指定id的组件进行注入
+
+
+
+### 4.6 Resource、Inject
+
+> 这两个注解也可以实现Autowire的功能，但他们不能使用required = false这样的参数
+>
+> Resource是J2EE的标准，Inject是EJB的标准
+>
+> Autowire是Spring规定的，Autowire的功能要更加强大
+
+
+
+### 4.7 泛型依赖注入 （重点）
+
+```java
+public class BaseService<T> {
+
+    @Autowired
+    BaseDao<T> baseDao;
+
+    public void save(){
+        System.out.println("baseDao是：" + baseDao);
+        baseDao.save();
+    }
+}
+
+@Service
+public class BookService extends BaseService<Book> {
+
+}
+
+bookService.save();
+
+//baseDao是：com.augus.dao.BookDao@515aebb0
+//BookDao save...
+```
+
+> 我们发现，BaseService我们并没有注册
+>
+> 但是依然可以成功赋值，并且引用了正确的BookDao
+
+> 在注入时，BookService需要BaseDao\<Book>这个类型
+>
+> 所以会在容器中找到 BookDao extends BaseDao\<Book>
+>
+> 来完成对应的注入
+
+> **在注入组件时，泛型也是参考标准**
+
+## 5 Spring单元测试
+
+> 我们直接把Junit注册称为Spring的组件，并且要求它为我们自动注入会陷入死循环
+>
+> 这个时候应该用Spring自己的单元测试
+
+```xml
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-test</artifactId>
+    <version>5.3.9</version>
+    <scope>test</scope>
+</dependency>
+```
+
+```java
+@ContextConfiguration(locations = "classpath:Spring-Config.xml")
+@RunWith(SpringJUnit4ClassRunner.class)
+public class MyTest {
+
+    @Autowired
+    BookServlet bookServlet;
+
+    @Test
+    public void test01() throws SQLException {
+        System.out.println(bookServlet);
+    }
+}
+```
+
+> 此方法仅适用于Junit4，Junit5不可以
 
 
 
