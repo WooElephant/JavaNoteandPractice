@@ -16,7 +16,7 @@
 
 > JSTL 由五个不同功能的标签库组成
 
-![](C:\Users\augus\Documents\GitHub\JavaNoteandPractice\JavaWeb\JSTL\笔记\jstl1.PNG)
+![](C:\Users\augus\Documents\GitHub\JavaNoteandPractice\JavaWeb\09.JSTL\笔记\jstl1.PNG)
 
 ## 导入
 
@@ -190,5 +190,5 @@ ${ requestScope.abc } <br/>
 
 > 输出如下：
 
-![](C:\Users\augus\Documents\GitHub\JavaNoteandPractice\JavaWeb\JSTL\笔记\jstl.PNG)
+![](C:\Users\augus\Documents\GitHub\JavaNoteandPractice\JavaWeb\09.JSTL\笔记\jstl.PNG)
 
