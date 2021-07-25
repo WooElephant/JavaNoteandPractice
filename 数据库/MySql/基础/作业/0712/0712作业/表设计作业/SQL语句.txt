@@ -1,0 +1,54 @@
+create table course(
+    c_id int primary key auto_increment,
+    c_name varchar(10) not null ,
+    c_professorName varchar(8)
+)character set UTF8;
+
+create table students(
+    s_id int primary key auto_increment,
+    s_name varchar(10) not null,
+    s_fromClassName varchar(10) not null
+)character set UTF8;
+
+create table stu_selectCourse(
+    se_id int primary key auto_increment,
+    se_stuId int,
+    se_courseId int,
+
+    foreign key (se_stuId) references students(s_id),
+    foreign key (se_courseId) references course(c_id)
+);
+
+insert into course(c_name, c_professorName) VALUES ('数据库','邓老师');
+insert into course(c_name, c_professorName) VALUES ('C语言','陈老师');
+insert into course(c_name, c_professorName) VALUES ('前端脚本技术','邓老师');
+insert into course(c_name, c_professorName) VALUES ('毛概','王老师');
+
+insert into students(s_name, s_fromClassName) values ('张三','数媒一班');
+insert into students(s_name, s_fromClassName) values ('李四','计科一班');
+insert into students(s_name, s_fromClassName) values ('王尼玛','计科一班');
+
+select * from students;
+select * from course;
+
+insert into stu_selectCourse(se_stuId, se_courseId) values (1,1);
+insert into stu_selectCourse(se_stuId, se_courseId) values (1,2);
+insert into stu_selectCourse(se_stuId, se_courseId) values (1,3);
+insert into stu_selectCourse(se_stuId, se_courseId) values (1,4);
+insert into stu_selectCourse(se_stuId, se_courseId) values (2,2);
+insert into stu_selectCourse(se_stuId, se_courseId) values (2,3);
+insert into stu_selectCourse(se_stuId, se_courseId) values (2,4);
+insert into stu_selectCourse(se_stuId, se_courseId) values (3,1);
+insert into stu_selectCourse(se_stuId, se_courseId) values (3,2);
+insert into stu_selectCourse(se_stuId, se_courseId) values (3,4);
+
+select se_id 选课记录,
+       s_id 学号,
+       s_name 姓名,
+       s_fromClassName 所属班级,
+       c_professorName 授课老师,
+       c_name 课程名称
+from stu_selectCourse stu
+join course c on stu.se_courseId = c.c_id
+join students s on stu.se_stuId = s.s_id
+order by se_id;

@@ -1,0 +1,110 @@
+/*
+表结构： 
+
+--1.学生表 
+Student(Sno,Sname,Sage,Ssex) --Sno 学生编号,Sname 学生姓名,Sage 
+出生年月,Ssex 学生性别 
+
+--2.课程表 
+Course(Cno,Cname,Tno) --Cno --课程编号,Cname课程名称,Tno 教师编 
+号 
+
+--3.教师表 
+Teacher(Tno,Tname) --Tno 教师编号,Tname 教师姓名 
+
+--4.成绩表 
+SC(Sno,Cno,score) --Sno 学生编号,Cno课程编号,score 分数
+
+
+create table Student(Sno varchar2(10),Sname varchar2(10),Sage date,Ssex varchar2(10)); 
+insert into Student values('01' , '赵雷' , to_date('1990-01-01','yyyy-mm-dd') , '男'); 
+insert into Student values('02' , '钱电' , to_date('1990-12-21','yyyy-mm-dd') , '男'); 
+insert into Student values('03' , '孙风' , to_date('1990-05-20','yyyy-mm-dd') , '男'); 
+insert into Student values('04' , '李云' , to_date('1990-08-06','yyyy-mm-dd') , '男'); 
+insert into Student values('05' , '周梅' , to_date('1991-12-01','yyyy-mm-dd') , '女'); 
+insert into Student values('06' , '吴兰' , to_date('1992-03-01','yyyy-mm-dd') , '女'); 
+insert into Student values('07' , '郑竹' , to_date('1989-07-01','yyyy-mm-dd') , '女'); 
+insert into Student values('08' , '王菊' , to_date('1990-01-20','yyyy-mm-dd') , '女'); 
+
+create table Course(Cno varchar2(10),Cname varchar2(10),Tno varchar2(10)); 
+insert into Course values('01' , '语文' , '02'); 
+insert into Course values('02' , '数学' , '01'); 
+insert into Course values('03' , '英语' , '03'); 
+
+create table Teacher(Tno varchar2(10),Tname varchar2(10)); 
+insert into Teacher values('01' , '张三'); 
+insert into Teacher values('02' , '李四'); 
+insert into Teacher values('03' , '王五'); 
+
+create table SC(Sno varchar2(10),Cno varchar2(10),score number(4,1));
+insert into SC values('01' , '01' , 80); 
+insert into SC values('01' , '02' , 90); 
+insert into SC values('01' , '03' , 99); 
+insert into SC values('02' , '01' , 70); 
+insert into SC values('02' , '02' , 60); 
+insert into SC values('02' , '03' , 80); 
+insert into SC values('03' , '01' , 80); 
+insert into SC values('03' , '02' , 80); 
+insert into SC values('03' , '03' , 80); 
+insert into SC values('04' , '01' , 50); 
+insert into SC values('04' , '02' , 30); 
+insert into SC values('04' , '03' , 20); 
+insert into SC values('05' , '01' , 76); 
+insert into SC values('05' , '02' , 87); 
+insert into SC values('06' , '01' , 31); 
+insert into SC values('06' , '03' , 34); 
+insert into SC values('07' , '02' , 89); 
+insert into SC values('07' , '03' , 98);  
+*/
+
+
+--1、查询"01"课程比"02"课程成绩高的学生的信息及课程分数 
+--2、查询"01"课程比"02"课程成绩低的学生的信息及课程分数 
+
+--3、查询平均成绩大于等于60分的同学的学生编号和学生姓名和平均成绩 
+--4、查询平均成绩小于60分的同学的学生编号和学生姓名和平均成绩 
+
+--5、查询在sc表中不存在成绩的学生信息的SQL语句
+
+--6、查询所有同学的学生编号、学生姓名、选课总数、所有课程的总成绩
+
+--7、查询"李"姓老师的数量
+
+--8、查询学过"张三"老师授课的同学的信息
+--9、查询没学过"张三"老师授课的同学的信息
+
+--10、查询学过编号为"01"并且也学过编号为"02"的课程的同学的信息
+--11、查询学过编号为"01"但是没有学过编号为"02"的课程的同学的信息 
+
+--12、查询没有学全所有课程的同学的信息
+
+--13、查询至少有一门课与学号为"01"的同学所学相同的同学的信息
+--14、查询和"01"号的同学学习的课程完全相同的其他同学的信息
+
+--15、查询两门及其以上不及格课程的同学的学号，姓名及其平均成绩
+
+--16、检索"01"课程分数小于60，按分数降序排列的学生信息
+
+--17、按平均成绩从高到低显示所有学生的所有课程的成绩以及平均成绩
+
+--19、查询每门课程被选修的学生数
+
+--20、查询每门课程的平均成绩，结果按平均成绩降序排列，平均成绩相同时，按课程编号升序排列
+
+
+--21、查询每个学员的每科成绩，显示结果如下
+学号  语文   数学   英语
+01       98     88       77 
+
+--18、查询各科成绩前三名的记录，显示结果如下
+          第一名    第二名    第三名
+语文     张三       李四       王五
+数学
+英语
+
+
+
+
+
+
+

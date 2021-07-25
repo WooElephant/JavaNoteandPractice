@@ -1,0 +1,79 @@
+1、交易明细文件内容如下例：
+---------------------------------------------------------------------------
+#客户号 姓名 所述机构号 性别 帐号 发生时间 发生额
+000001|刘德华|0000|1|4155990188888888|20060720200005|300.00
+000201|晓龙|0002|1|4155990199999999|20060720200005|500.00
+000101|黄晓明|0012|1|4155990100000000|20060720200005|1000.50
+000101|张东健|0012|1|4155990155555555|20060720200005|600.99
+000301|梁朝伟|0013|0|4155990111111111|20060722201005|5000.00
+000001|刘德华|0000|1|4155990188888888|20060725200005|200.00
+
+---------------------------------------------------------------------------
+2、一行是一条交易明细，每行分6列，列间用|分隔。#为注释符号。
+3、类TransRecord存储一条明细
+4、解析文件数据至TransRecord[]
+5、实现如下功能：
+public class TransRecordManager{
+    /**
+    * 记录数组
+    */
+    private TransRecord[] records;
+
+    /**
+    * 加载数据
+    * @param in - 数据流
+    * @return
+    * @throws - 解析过程中IO错误
+    */
+    public void load(InputStream in) throws IOException;
+
+    /**
+    * 加载数据
+    * @param fileName - 包含记录数据的文件名
+    * @return
+    * @throws - 解析过程中IO错误
+    */
+    public void load(String fileName) throws IOException;
+
+    /**
+    * 取所有记录
+    * @return 所有记录数组或null
+    */
+    public TransRecord[] getAll();
+
+    /**
+    * 按客户号查询记录
+    * @param customerNumber - 客户号
+    * @return 符合条件的记录数组或null
+    */
+    public TransRecord[] findByCustomerNumber(String customerNumber);
+
+    /**
+    * 按日期段查询记录
+    * @param start - 开始日期
+    * @param end - 结束日期
+    * @return 符合条件的记录数组或null
+    */
+    public TransRecord[] findByDate(String start, String end);
+
+    /**
+    * 取得总金额
+    * @return 总金额
+    */
+    public BigDecimal totalAmount();
+
+    /**
+    * 按金额排序
+    * @return 按金额升序排序的结果
+    */
+    public TransRecord[] sortByAmount();
+
+    /**
+    * 打印  
+    * @param out - 输出流
+    */
+    public void print(OutputStream out);
+
+}
+6、将类中的TransRecord[]全部换成List再实现一次。
+7、提示：排序、查询采用java.util.Arrays和java.util.Collections中的方法
