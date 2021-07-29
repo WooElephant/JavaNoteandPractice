@@ -24,15 +24,15 @@
 > - JDBC为访问不同的数据库提供了一种**统一的途径**
 > - JDBC的目标是使Java程序员使用JDBC可以连接任何**提供了JDBC驱动程序**的数据库系统，这样就使得程序员无需对特定的数据库系统的特点有过多的了解，从而大大简化和加快了开发过程
 
-![](C:\Users\augus\Documents\GitHub\JavaNoteandPractice\JDBC\笔记\1555575721407.png)
+![](C:\Users\augus\Documents\GitHub\JavaNoteandPractice\Java基础\JDBC\笔记\1555575721407.png)
 
 > 如果没有JDBC，我们需要直接操作各个数据库
 >
 > 需要了解每一个数据库的相应语法和规范
 
-![](C:\Users\augus\Documents\GitHub\JavaNoteandPractice\JDBC\笔记\1555575981203.png)
+![](C:\Users\augus\Documents\GitHub\JavaNoteandPractice\Java基础\JDBC\笔记\1555575981203.png)
 
-![](C:\Users\augus\Documents\GitHub\JavaNoteandPractice\JDBC\笔记\1566741692804.png)
+![](C:\Users\augus\Documents\GitHub\JavaNoteandPractice\Java基础\JDBC\笔记\1566741692804.png)
 
 > 有了JDBC，我们只需要学会如何操作JDBC，就可以兼容各种数据库
 
@@ -44,7 +44,7 @@
 
 ### JDBC程序编写步骤
 
-![](C:\Users\augus\Documents\GitHub\JavaNoteandPractice\JDBC\笔记\1565969323908.png)
+![](C:\Users\augus\Documents\GitHub\JavaNoteandPractice\Java基础\JDBC\笔记\1565969323908.png)
 
 
 
