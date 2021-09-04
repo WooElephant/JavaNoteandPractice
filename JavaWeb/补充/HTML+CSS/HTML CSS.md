@@ -2055,22 +2055,73 @@ div {
 > display: inline-flex	设置为行内弹性容器
 
 > 弹性容器的直接子元素是弹性元素
+>
+> 一个元素可以同时是弹性容器，也是弹性元素
+
+```html
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>flex</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        ul{
+            width: 800px;
+            border: red solid 10px;
+            /*将其设置为弹性容器*/
+            display: flex;
+        }
+        li{
+            width: 100px;
+            height: 100px;
+            background-color: #bfa;
+            font-size: 50px;
+            text-align: center;
+        }
+        li:nth-child(2){
+            background-color: pink;
+        }
+        li:nth-child(3){
+            background-color: orange;
+        }
+    </style>
+</head>
+<body>
+    <ul>
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+    </ul>
+</body>
+</html>
+```
+
+![image-20210823190824045](C:\Users\augus\Documents\GitHub\JavaNoteandPractice\JavaWeb\补充\HTML+CSS\HTML CSS.assets\image-20210823190824045.png)
 
 > flex-direction	用来指定弹性容器中元素的排列方式
 >
 > row	默认值，水平排列
 >
-> row-reverse	反向水平排列
+> row-reverse	反向水平排列，又右至左排列，右对齐，效果  空---------------空321
 >
 > colum	垂直排列
 >
 > colum-reverse	垂直反向排列
+
+
 
 ### 主轴与侧（辅）轴
 
 > 弹性元素的排列方向称为主轴
 >
 > 与主轴方向垂直的为侧轴
+
+
 
 ### 弹性元素
 
@@ -2081,6 +2132,31 @@ div {
 > 当父元素有空余空间时，子元素如何伸展
 >
 > 父元素的剩余空间，会按比例进行分配，后面跟的值越大，占比越大
+>
+> 如下，123一共占6份，1占1份，2占2份，3占3份
+
+```css
+li{
+    width: 100px;
+    height: 100px;
+    background-color: #bfa;
+    font-size: 50px;
+    text-align: center;
+
+    /*弹性元素的属性*/
+    flex-grow: 1;
+}
+li:nth-child(2){
+    background-color: pink;
+    flex-grow: 2;
+}
+li:nth-child(3){
+    background-color: orange;
+    flex-grow: 3;
+}
+```
+
+![image-20210823191520326](C:\Users\augus\Documents\GitHub\JavaNoteandPractice\JavaWeb\补充\HTML+CSS\HTML CSS.assets\image-20210823191520326.png)
 
 > flex-shrink
 >
@@ -2090,7 +2166,11 @@ div {
 >
 > 值越大缩的越多
 
+
+
 ### 容器的属性
+
+![image-20210823192233692](C:\Users\augus\Documents\GitHub\JavaNoteandPractice\JavaWeb\补充\HTML+CSS\HTML CSS.assets\image-20210823192233692.png)
 
 > flex-wrap
 >
@@ -2104,23 +2184,27 @@ div {
 
 > flex-flow	wrap和direction的简写
 
+![image-20210823192432840](C:\Users\augus\Documents\GitHub\JavaNoteandPractice\JavaWeb\补充\HTML+CSS\HTML CSS.assets\image-20210823192432840.png)
+
 > justify-content	如何分配主轴的空白空间
 >
-> flex-start	元素沿着主轴起边排列
+> flex-start	元素沿着主轴起边排列，如图，起边可以理解为起始点，从左往右，起始点就是左
 >
 > flex-end	元素沿着主轴终边排列
 >
 > center	居中排列
 >
-> space-around	空白分布到元素两侧
+> space-around	空白分布到元素两侧，每个元素两侧都有空白
 >
-> space-evenly	空白分布到元素单侧
+> space-evenly	空白分布到元素单侧，如果重合部分只算做一份，不再计算为两份
 >
 > space-between	空白分布到元素间
 
+![image-20210823193429010](C:\Users\augus\Documents\GitHub\JavaNoteandPractice\JavaWeb\补充\HTML+CSS\HTML CSS.assets\image-20210823193429010.png)
+
 > align-items	元素在辅轴上如何对齐
 >
-> stretch	默认值，将元素的长度设置为相同的值
+> stretch	默认值，将元素的长度设置为相同的值，将元素拉伸
 >
 > flex-start	元素不会拉伸，沿辅轴起边对齐
 >
@@ -2132,6 +2216,8 @@ div {
 
 > align-content	辅轴空白空间分布，用法与justify-content一样
 
+
+
 ### 元素的属性
 
 > flex-grow	弹性按比例增长系数
@@ -2139,10 +2225,16 @@ div {
 > flex-shrink	弹性按比例缩减系数
 
 > flex-basis	元素在主轴上的基础长度
+>
+> 如果主轴是横向的，就相当于当前元素的width
+>
+> 如果主轴是纵向的，就相当于当前元素的height
+>
+> 默认值是auto，表示参考元素自身的width，height
 
 > flex	可以设置弹性元素三个基础样式
 >
-> flex	增长	缩减	基础
+> flex	增长系数	缩减系数	基础长度
 
 > order	决定元素的排列顺序
 >

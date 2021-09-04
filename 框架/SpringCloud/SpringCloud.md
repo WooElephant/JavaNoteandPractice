@@ -569,3 +569,87 @@ public class OrderController {
 
 > 详见文件夹中OpenFeign.md
 
+
+
+## 服务降级
+
+### Hystrix
+
+> 详见文件夹中Hystrix.md
+
+
+
+## 服务网关
+
+### Gateway
+
+> 详见文件夹中Gateway.md
+
+
+
+## 分布式配置中心
+
+### Config
+
+> 详见文件夹中Config.md
+
+
+
+## 消息总线
+
+### Bus
+
+> 详见文件夹中Bus.md
+
+
+
+## 消息驱动
+
+### Stream
+
+> 详见文件夹中Stream.md
+
+
+
+## 分布式请求链路跟踪
+
+### Sleuth
+
+> 详见文件夹中Sleuth.md
+
+
+
+## SpringCloud Alibaba
+
+> 因为很多Netflix组件停止更新，Alibaba出了很多替代并且好用的云端整合方案，解决了Netflix停更的空白
+
+```xml
+<dependency>
+  <groupId>com.alibaba.cloud</groupId>
+  <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+  <version>2.1.0.RELEASE</version>
+  <type>pom</type>
+  <scope>import</scope>
+</dependency>
+```
+
+> 引入其依赖即可使用
+
+
+
+### Nacos
+
+> 详见文件夹中Nacos.md
+
+
+
+### Sentinel
+
+> 详见文件夹中Sentinel.md
+
+
+
+### Seata
+
+> 详见文件夹中Seata.md
+
